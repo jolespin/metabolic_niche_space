@@ -1,4 +1,5 @@
 
+from .neighbors import KNeighborsKernel
 from datafold.dynfold import DiffusionMaps, Roseland
 
 class DiffusionMapEmbedding(DiffusionMaps):
