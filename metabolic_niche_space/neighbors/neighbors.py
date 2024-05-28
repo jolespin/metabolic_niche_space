@@ -93,41 +93,40 @@ def kneighbors_graph_from_transformer(X, knn_transformer=KNeighborsTransformer, 
 
 def brute_force_kneighbors_graph_from_rectangular_distance(distance_matrix, n_neighbors:int, mode="connectivity", include_self=True):
     assert mode in {"distance", "connectivity"}, "mode must be either 'distance' or 'connectivity'"
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        # ==================================================================
-        # Naive
-        # -----
-        # out = csr_matrix(distance_matrix.shape)
-        # if mode == "connectivity":
-        #     for i, index in enumerate(indices):
-        #         out[i,index] = 1.0
-        # if mode == "distance":
-        #     distances = np.sort(distance_matrix, axis=1)[:, :n_neighbors]
-        #     for i, index in enumerate(indices):
-        #         out[i,index] = distances[i]
-        # ==================================================================
-        if include_self:
-            n_neighbors = n_neighbors - 1
-            
-        # Sort indices up to n_neighbors            
-        indices = np.argpartition(distance_matrix, n_neighbors, axis=1)[:, :n_neighbors]
-        # Use ones for connectivity values
-        if mode == "connectivity":
-            data = np.ones(distance_matrix.shape[0] * n_neighbors, dtype=float)
-        # Use distances values
-        if mode == "distance":
-            data = np.partition(distance_matrix, n_neighbors, axis=1)[:, :n_neighbors].ravel()
-        # Get row indices
-        row = np.repeat(np.arange(distance_matrix.shape[0]), n_neighbors)
-        # Get column indicies
-        col = indices.ravel()
-        
-        # Build COO matrix
-        graph = sps.coo_matrix((data, (row, col)), shape=distance_matrix.shape)
 
-        # Convert to CRS matrix
-        return graph.tocsr()
+    # ==================================================================
+    # Naive
+    # -----
+    # out = csr_matrix(distance_matrix.shape)
+    # if mode == "connectivity":
+    #     for i, index in enumerate(indices):
+    #         out[i,index] = 1.0
+    # if mode == "distance":
+    #     distances = np.sort(distance_matrix, axis=1)[:, :n_neighbors]
+    #     for i, index in enumerate(indices):
+    #         out[i,index] = distances[i]
+    # ==================================================================
+    if include_self:
+        n_neighbors = n_neighbors - 1
+        
+    # Sort indices up to n_neighbors            
+    indices = np.argpartition(distance_matrix, n_neighbors, axis=1)[:, :n_neighbors]
+    # Use ones for connectivity values
+    if mode == "connectivity":
+        data = np.ones(distance_matrix.shape[0] * n_neighbors, dtype=float)
+    # Use distances values
+    if mode == "distance":
+        data = np.partition(distance_matrix, n_neighbors, axis=1)[:, :n_neighbors].ravel()
+    # Get row indices
+    row = np.repeat(np.arange(distance_matrix.shape[0]), n_neighbors)
+    # Get column indicies
+    col = indices.ravel()
+    
+    # Build COO matrix
+    graph = sps.coo_matrix((data, (row, col)), shape=distance_matrix.shape)
+
+    # Convert to CRS matrix
+    return graph.tocsr()
     
     
 class KNeighborsKernel(PCManifoldKernel):

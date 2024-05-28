@@ -1,5 +1,0 @@
-numpy>=1.9
-scipy>=1.0
-pytest>=3.0
-scikit-learn>=1.0
-datafold>=2.0.1

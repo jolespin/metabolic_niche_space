@@ -4,13 +4,14 @@ from os import path
 
 script_directory = path.abspath(path.dirname(__file__))
 
+package_name = "metabolic_niche_space"
 version = None
-with open(path.join(script_directory, 'metabolic_niche_space', '__init__.py')) as f:
+with open(path.join(script_directory, package_name, '__init__.py')) as f:
     for line in f.readlines():
         line = line.strip()
         if line.startswith("__version__"):
             version = line.split("=")[-1].strip().strip('"')
-assert version is not None, "Check version in metabolic_niche_space/__init__.py"
+assert version is not None, f"Check version in {package_name}/__init__.py"
 
 with open(path.join(script_directory, 'README.md')) as f:
     long_description = f.read()
@@ -24,8 +25,7 @@ with open(path.join(script_directory, 'requirements.txt')) as f:
                 requirements.append(line)
 
 setup(
-    name='metabolic-niche-space',
-
+    name=package_name,
     python_requires='>=3.6',
     version=version,
     description='Metabolic niche space analysis',
@@ -39,9 +39,10 @@ setup(
 
     # Choose your license
     license='GPLv3',
-    provides=['metabolic_niche_space'],
-    # packages=find_package/s(),
-    py_modules=["manifold", "neighbors"],
+    # provides=['metabolic_niche_space'],
+    # packages=['metabolic_niche_space'],
+    # py_modules=["manifold", "neighbors"],
+    packages=find_packages(),
     
     install_requires=requirements, #[:-1],
     tests_require=requirements, #[-1:]
