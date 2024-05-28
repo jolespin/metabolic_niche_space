@@ -1,0 +1,16 @@
+Metadata-Version: 2.1
+Name: metabolic-niche-space
+Version: 2024.5.28a0
+Summary: Metabolic niche space analysis
+Home-page: https://github.com/jolespin/metabolic_niche_space
+Author: Josh L. Espinoza
+License: GPL3
+Provides: metabolic_niche_space
+Requires-Python: >=3.6
+Requires-Dist: numpy>=1.9
+Requires-Dist: scipy>=1.0
+Requires-Dist: pytest>=3.0
+Requires-Dist: scikit-learn>=1.0
+Requires-Dist: datafold>=2.0.1
+
+Metabolic Niche Space
