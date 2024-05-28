@@ -14,9 +14,9 @@ class DiffusionMapEmbedding(DiffusionMaps):
     """
     pass
 
-class RoselandEmbedding(Roseland):
+class LandmarkDiffusionMapEmbedding(Roseland):
     """
-    RoselandEmbedding is a renamed version of the Roseland class from the datafold.dynfold package.
+    LandmarkDiffusionMapEmbedding is a renamed version of the Roseland class from the datafold.dynfold package.
     It inherits all methods and properties of the original class without any modifications.
     
     Documentation: 
@@ -28,4 +28,4 @@ class RoselandEmbedding(Roseland):
     pass
 
 
-__all__ = ["DiffusionMapEmbedding", "RoselandEmbedding"]
+__all__ = ["DiffusionMapEmbedding", "LandmarkDiffusionMapEmbedding"]

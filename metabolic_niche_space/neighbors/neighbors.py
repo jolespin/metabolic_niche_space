@@ -130,6 +130,12 @@ def brute_force_kneighbors_graph_from_rectangular_distance(distance_matrix, n_ne
     
     
 class KNeighborsKernel(PCManifoldKernel):
+    """
+    K-Nearest Neighbors Kernel
+    
+    Acknowledgement: 
+    https://gitlab.com/datafold-dev/datafold/-/issues/166
+    """
     def __init__(self, metric:str, n_neighbors:int):
 
         self.n_neighbors = n_neighbors
