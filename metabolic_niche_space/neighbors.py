@@ -143,45 +143,6 @@ class KNeighborsKernel(PCManifoldKernel):
 
     def evaluate(self, distance_matrix):
 
-        def _brute_force_knn_connectivity_from_rectangular_distance(distance_matrix, n_neighbors:int, include_self=True,  mode="connectivity"):
-            assert mode in {"distance", "connectivity"}, "mode must be either 'distance' or 'connectivity'"
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                if include_self:
-                    n_neighbors = n_neighbors - 1
-                indices = np.argsort(distance_matrix, axis=1)[:, :n_neighbors]
-        
-                # ==================================================================
-                # Naive
-                # -----
-                # out = csr_matrix(distance_matrix.shape)
-                # if mode == "connectivity":
-                #     for i, index in enumerate(indices):
-                #         out[i,index] = 1.0
-                # if mode == "distance":
-                #     distances = np.sort(distance_matrix, axis=1)[:, :n_neighbors]
-                #     for i, index in enumerate(indices):
-                #         out[i,index] = distances[i]
-                # ==================================================================
-        
-                # Flatten the inds and dists arrays
-                col_indices = indices.flatten()
-        
-                if mode == "connectivity":
-                    data = np.ones_like(col_indices, dtype=float)
-                if mode == "distances":
-                    distances = np.sort(distance_matrix, axis=1)[:, :n_neighbors]
-                    data = distances.flatten()
-                
-                # Create the row indices
-                number_of_rows = indices.shape[0]
-                row_indices = np.repeat(np.arange(number_of_rows), indices.shape[1])
-                
-                # Create the CSR matrix
-                out = sps.csr_matrix((data, (row_indices, col_indices)), shape=distance_matrix.shape)
-                
-                return out
-
         # Compute KNN connectivity kernel
         distance_matrix_is_rectangular = True
         shape = distance_matrix.shape
@@ -193,5 +154,4 @@ class KNeighborsKernel(PCManifoldKernel):
         else:
             connectivities = kneighbors_graph(distance_matrix, n_neighbors=self.n_neighbors, metric="precomputed", include_self=True, mode="connectivity")
 
-            
         return connectivities
