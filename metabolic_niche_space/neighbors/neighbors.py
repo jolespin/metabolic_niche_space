@@ -8,7 +8,7 @@ import scipy.sparse as sps
 from scipy.linalg import issymmetric
 from sklearn.base import clone
 from sklearn.neighbors import KNeighborsTransformer, kneighbors_graph
-# from scipy.spatial.distance import pdist, squareform
+from scipy.spatial.distance import squareform
 
 from datafold.pcfold.distance import BruteForceDist
 from datafold.pcfold import PCManifoldKernel
@@ -136,27 +136,47 @@ class KNeighborsKernel(PCManifoldKernel):
     Acknowledgement: 
     https://gitlab.com/datafold-dev/datafold/-/issues/166
     """
-    def __init__(self, metric:str, n_neighbors:int):
+    def __init__(self, metric:str, n_neighbors:int, distance_matrix:Optional[np.ndarray]=None, copy_distance_matrix=False, verbose=0):
 
         self.n_neighbors = n_neighbors
+        self.verbose = verbose
+        if distance_matrix is not None:
+            if len(distance_matrix.shape) == 1:
+                distance_matrix = squareform(distance_matrix)
+            else:
+                if copy_distance_matrix:
+                    distance_matrix = distance_matrix.copy()
+        self.distance_matrix = distance_matrix
+
         distance = BruteForceDist(metric=metric)
         super().__init__(is_symmetric=True, is_stochastic=False, distance=distance)
 
     def __call__(self, X: np.ndarray, Y: Optional[np.ndarray] = None, **kernel_kwargs):
-        distance = self.distance(X, Y)
-        return self.evaluate(distance)
+        if all([
+            Y is None,
+            self.distance_matrix is not None,
+            ]):
+            n, m = X.shape
+            assert self.distance_matrix.shape[0] == n, "X.shape[0] must equal distance_matrx.shape[0]"
+            assert self.distance_matrix.shape[1] == n, "X.shape[0] must equal distance_matrx.shape[1]"
+            distance_matrix = self.distance_matrix
+            if self.verbose > 0:
+                print("Precomputed distance matrix detected. Skipping pairwise distance calculations.", file=sys.stderr, flush=True)
+        else:
+            distance_matrix = self.distance(X, Y)
+        return self.evaluate(distance_matrix)
 
     def evaluate(self, distance_matrix):
 
         # Compute KNN connectivity kernel
-        distance_matrix_is_rectangular = True
+        distance_matrix_is_square = False
         shape = distance_matrix.shape
         if shape[0] == shape[1]:
             if issymmetric(distance_matrix):
-                distance_matrix_is_rectangular = False
-        if distance_matrix_is_rectangular:
-            connectivities = brute_force_kneighbors_graph_from_rectangular_distance(distance_matrix, n_neighbors=self.n_neighbors, include_self=True, mode="connectivity")
-        else:
+                distance_matrix_is_square = True
+        if distance_matrix_is_square:
             connectivities = kneighbors_graph(distance_matrix, n_neighbors=self.n_neighbors, metric="precomputed", include_self=True, mode="connectivity")
+        else:
+            connectivities = brute_force_kneighbors_graph_from_rectangular_distance(distance_matrix, n_neighbors=self.n_neighbors, include_self=True, mode="connectivity")
 
         return connectivities

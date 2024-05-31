@@ -1,0 +1,1 @@
+* [2024.5.30] - Added `distance_matrix` option for precomputed distances in `KNeighborsKernel`.
