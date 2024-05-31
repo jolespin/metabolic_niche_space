@@ -140,6 +140,7 @@ class KNeighborsKernel(PCManifoldKernel):
 
         self.n_neighbors = n_neighbors
         self.verbose = verbose
+        self.copy_distance_matrix = copy_distance_matrix
         if distance_matrix is not None:
             if len(distance_matrix.shape) == 1:
                 distance_matrix = squareform(distance_matrix)
