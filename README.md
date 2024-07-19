@@ -13,6 +13,7 @@ from scipy.spatial.distance import pdist, squareform
 from sklearn.datasets import make_classification
 from sklearn.neighbors import kneighbors_graph, KNeighborsTransformer
 from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
 
 # Metabolic Niche Space
 from metabolic_niche_space.neighbors import KNeighborsKernel
