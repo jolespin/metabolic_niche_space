@@ -1,4 +1,5 @@
 #### Daily Change Log:
+* [2024.8.13] - Added `enrichment`, `utils`, and `fetch` modules
 * [2024.5.30] - Added `distance_matrix` option for precomputed distances in `KNeighborsKernel`.
 
 #### Pending: 

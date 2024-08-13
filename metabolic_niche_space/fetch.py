@@ -4,6 +4,8 @@ from collections import defaultdict
 import pandas as pd
 from Bio.KEGG.REST import kegg_get
 
+from .utils import check_argument_choice
+
 # Parse KEGG response
 def _parse_kegg_response(id:str) -> dict:
     """Use REST API to fetch KEGG response and parse into dictionary
@@ -658,8 +660,7 @@ def fetch_kegg_info(id: str, ktype:str, into=dict, **kwargs):
         "pathway":_fetch_kegg_pathway_info,
     }
     
-    if ktype not in ktype_to_function:
-        raise ValueError(f"Invalid option '{ktype}'. Allowed choices are: {ktype_to_function.keys()}")
+    check_argument_choice(ktype, ktype_to_function.keys())
 
     info = ktype_to_function[ktype](id, **kwargs)
     if into == pd.Series:

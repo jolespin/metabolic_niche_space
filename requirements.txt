@@ -1,7 +1,11 @@
 numpy>=1.9
-scipy>=1.0
+scipy>=1.11
+pandas
 scikit-learn>=1.2.1,<=1.3.0
+tqdm
 biopython
+memory_profiler
+rule_evaluator>=2024.8.14
 datafold>=2.0.1
 clairvoyance-feature-selection>=2024.7.19
 #blitzgsea>=1.3.42
